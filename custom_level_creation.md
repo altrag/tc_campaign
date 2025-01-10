@@ -67,6 +67,15 @@ Coming "Soon".
 
 Coming "Soon".
 
+For now, here's a cut-and-paste of Stuffe's comment:
+
+>Now you have to update the test.si code for the new language. This language is not done yet but is reasonably stable. Do not complain about it since I really don't have time to look at it until the next patch is out. You can update it while you are in the game and force the level to "hot reload" by editing the circuit in any way. However, if compilation fails the game will shut down. You can see the debug output in the console that opens when the game opens, but you really should turn on ansi colors in your console, otherwise it will be unreadable. The language is syntactically strict because I want it to be readable. First of all, all values are enforced snake_case all constants are enforced CAPITALIZED and all types are PascalCase. If a function intends to mutate an argument directly, it has to prepend a $ before said argument, like def my_func($mutable: Int) { ... }. This is also enforced on the caller side, so when you call it you have to do my_func($my_var) (The exception to this rule is operators where the second character is =, like +=). Further you must prepend . when using any variable that is declared outside a function, except for constants. And indentation is forced, like Python, but always 4 spaces. The one exception to this is single line blocks like if condition { return }
+>
+>You can use global state in the level code, but don't do it, it will make things non deterministic and mess up resetting, stepping backwards and things like that. Instead use the scratch_space array to store data. Yes that is kind of clumsy, but the game resets that array when resetting the level.
+>
+>To get output from within a level, you can either use print("hello") which shows up in the console, or set_error("hello") which shows up in the game. You can use string interpolation with backticks and curly brackets like this 
+set_error(`my number is {my_variable + 3}`)
+
 ## UI Metadata
 
 Coming "Soon".
