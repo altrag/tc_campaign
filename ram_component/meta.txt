@@ -1,7 +1,7 @@
 kind = sequential
 title = "Little Box"
 size = [-16, -16, 16, 16]
-unlocks_components = [com_rom, com_ram]
+unlocks_components = [com_ram]
 input_labels = [["DON'T LOAD", "LOAD", "LOAD"],["DON'T SAVE", "SAVE", "SAVE"], ["A", "B", "A OR B"], ["0", "1", "0 OR 1"], ["VALUE"]]
 dialogue = [
   (alien_centered, "Can you fit 4 bytes of memory in this limited space?"),

@@ -4,8 +4,6 @@ size = [-30, -30, 30, 30]
 tick_past_fail = 16
 unlocks_pages = ["Binary"]
 background = 5
-unlocks_info = "[color=#b72d41][b]TIP:[/b][/color] 
-There is no shame in using pen and paper"
 dialogue = [
   (info_centered, "The output component of this level is a binary counter where the first 3 pins correspond to 1, 2 and 4.
 Use the binary counter to display the number of signals.

@@ -83,7 +83,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
     var reg_i = 0
     while reg_i < 6 {
-        let value = get_level_memory(`reg {reg_i}`)
+        let value = get_level_memory(`reg {reg_i}`) & 0xff
         if value != -1 && .registers[reg_i] != value {
             set_error(`Register {reg_i} should have value {.registers[reg_i]}.`)
             return fail

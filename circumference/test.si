@@ -1,5 +1,5 @@
 
-def reset(test: Int, $scratch_space: [Int]) {
+def on_reset($scratch_space: [Int], test: Int) {
     ui_set_hidden("note", true)
 }
 

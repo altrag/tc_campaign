@@ -4,7 +4,7 @@ size = [-46, -46, 46, 46]
 tick_past_fail = 0xff
 unlocks_components = [com_inc]
 dialogue = [
-  (alien_centered, "Energy is finite and if we consume it all, we will be at the heat death of the universe. This is why efficiency is important.
+  (alien_centered, "Exergy is finite and if we consume it all, we will be at the heat death of the universe. This is why efficiency is important.
 
 In our society, we find inefficiency ugly and efficiency beautiful.
 

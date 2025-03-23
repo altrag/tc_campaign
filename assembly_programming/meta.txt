@@ -1,14 +1,14 @@
 kind = sequential
 title = "Add 5 again"
 tests = 32
-size = [-75, -50, 43, 45]
+size = [-80, -50, 43, 45]
 remove_components = [com_punch_card]
-add_components = [com_rom: -1]
-unlocks_components = [com_rom]
+add_components = [com_ram: -1]
+unlocks_components = [com_ram]
 copy_solution_to_architecture = "Overture"
 dialogue = [
   (alien_centered, "Programming by setting bits manually is tedious. We need you to learn assembly programming."),
-  (alien_centered, `I replaced the front panel component with an assembly component that looks almost identical. Click on the "edit" button to start programming in assembly. This level is identical to the last - read an input, add 5 and move it to output.`),
+  (alien_centered, `I replaced the punch card component with an RAM component that looks almost identical, except it has a few more pins. Click on the "edit" button on it to start programming in assembly. This level is identical to the last - read an input, add 5 and move it to output.`),
   (overture),
 ]
 default_isa_spec = `

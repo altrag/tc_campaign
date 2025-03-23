@@ -1,6 +1,3 @@
 def arch_get_input($scratch_space: [Int], test: Int) Int { }
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult { }
-
-
-

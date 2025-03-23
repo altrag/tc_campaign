@@ -7,16 +7,16 @@ def instruction_to_str(instruction: Int) String {
 
     let mode            = (instruction >> 30)
     let opcode          = (instruction >> 24) & 0b1111
-    let dest            = (instruction >> 20) & 0b111
-    let a               = (instruction >> 16) & 0b111
-    let b               = (instruction >> 8) & 0b111
+    let dest            = (instruction >> 20) & 0b1111
+    let a               = (instruction >> 16) & 0b1111
+    let b               = (instruction >> 8) & 0b1111
     let immediate       = (instruction >> 28) & 1 != 0
     let immediate_value =  instruction & 0xffff
 
     var dest_str = ""
 
     switch dest
-        0 { dest_str = "rz" }
+        0 { dest_str = "zr" }
         14 { dest_str = "sp" }
         15 { dest_str = "flags" }
         default { dest_str = "r" + str(dest) }
@@ -25,7 +25,7 @@ def instruction_to_str(instruction: Int) String {
     var a_str = ""
 
     switch a
-        0 { a_str = "rz" }
+        0 { a_str = "zr" }
         14 { a_str = "sp" }
         15 { a_str = "flags" }
         default { a_str = "r" + str(a) }
@@ -39,7 +39,7 @@ def instruction_to_str(instruction: Int) String {
     } else {
 
         switch b
-            0 { b_str = "rz" }
+            0 { b_str = "zr" }
             14 { b_str = "sp" }
             15 { b_str = "flags" }
             default { b_str = "r" + str(b) }
@@ -116,14 +116,19 @@ def instruction_to_str(instruction: Int) String {
 
         OP_RAM {
 
-            const LOAD  = 0
-            const STORE = 1
+            const LOAD   = 0
+            const STORE  = 1
+            const PLOAD  = 2
+            const PSTORE = 3
 
             switch opcode
-                LOAD  { return `load {dest_str}, [{b_str}]` }
-                STORE { return `store [{b_str}], {a_str}` }
+                LOAD   { return `load {dest_str}, [{b_str}]` }
+                STORE  { return `store [{b_str}], {a_str}` }
+                PLOAD  { return `pload {dest_str}, [{b_str}]` }
+                PSTORE { return `pstore [{b_str}], {a_str}` }
 
         }
+
 
 }
 
@@ -196,20 +201,28 @@ def get_random_instruction() Int {
 def get_reg_name(register: Int) String {
 
     switch register
-        0 { return `rz` }
+        0 { return `zr` }
         1 { return `r1` }
         2 { return `r2` }
         3 { return `r3` }
         4 { return `r4` }
         5 { return `r5` }
-        6 { return `sp` }
-        7 { return `flags` }
+        6 { return `r6` }
+        7 { return `r7` }
+        8 { return `r8` }
+        9 { return `r9` }
+        10 { return `r10` }
+        11 { return `r11` }
+        12 { return `r12` }
+        13 { return `r13` }
+        14 { return `sp` }
+        15 { return `flags` }
     
 }
 
 def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
-    let register = random(8)
+    let register = random(16)
 
     set_custom_input_text(get_reg_name(register))
 
@@ -227,8 +240,8 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     let mode            = (instruction >> 30)
     let opcode          = (instruction >> 24) & 0b1111
     let immediate       = ((instruction >> 28) & 1) == 1
-    var dest_value      = ((instruction >> 20) & 0b111)
-    var a_reg           = (instruction >> 16) & 0b111
+    var dest_value      = ((instruction >> 20) & 0b1111)
+    var a_reg           = (instruction >> 16) & 0b1111
     var b_reg           = ((instruction >>  8) & 0b111)
 
     let register        = inputs[1]

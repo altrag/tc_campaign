@@ -38,11 +38,18 @@ def arch_get_input($scratch_space: [Int], test: Int) Int {
 
     let cursor = scratch_space[INPUT_CURSOR]
     scratch_space[INPUT_CURSOR] += 1
-    return scratch_space[RAW_NUMBERS + cursor]
+    return cursor < 16 ? scratch_space[RAW_NUMBERS + cursor] : 0
 
 }
 
 def arch_check_output($scratch_space: [Int], test: Int, input: Int, output: Int) TestResult {
+
+    if scratch_space[INPUT_CURSOR] > 16 {
+
+        set_error("You should not read more than 16 numbers from input")
+        return fail
+
+    }
 
     let cursor = scratch_space[OUTPUT_CURSOR]
     scratch_space[OUTPUT_CURSOR] += 1

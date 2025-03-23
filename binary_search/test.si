@@ -14,37 +14,52 @@ def arch_get_input($scratch_space: [Int], test: Int) Int {
 
 def arch_check_output($scratch_space: [Int], test: Int, input: Int, output: Int) TestResult {
 
-    if scratch_space[MIN] + 1 >= scratch_space[MAX] {
+    if (scratch_space[MIN] == scratch_space[MAX]) && (scratch_space[MIN] == output) {
 
         // The value is pinned down
+        return win
 
-        if scratch_space[MIN] == output {
-            return win
-        }
-
-        scratch_space[OVER] = <Int> (output > scratch_space[MIN])
-
-        return pass
     }
 
+    // If the player guessed below the interval where the correct value could possibly be found.
     if output < scratch_space[MIN] {
+
         scratch_space[OVER] = 0
 
-    } elif output > scratch_space[MAX] {
+        return pass
+
+    }
+
+    // If the player guessed above the interval where the correct value could possibly be found.
+    if output > scratch_space[MAX] {
+
+        scratch_space[OVER] = 1
+
+        return pass
+
+    }
+
+    // Getting a sample from the interval [min .. max - 1] may seem unintuitive,
+    // but it makes the selection fair (i.e. more correct) and does away with an edge case.
+    // The reason is that any of the comparisons "<", ">", "<=" or ">=" (of which we use ">" below)
+    // splits the interval between two adjacent integers rather than exactly _at_ a single one.
+    // (Or in other words value a cannot be simultaneously > than value b AND NOT > than value b.)
+    let sample = scratch_space[MIN] + random(scratch_space[MAX] - scratch_space[MIN])
+
+    // Select one of the intervals [min .. guess - 1] or [guess + 1 .. max]
+    // probabilistically (with the help of the random sample) based on their relative sizes.
+    if output > sample {
+
+        scratch_space[MAX]  = output - 1
         scratch_space[OVER] = 1
 
     } else {
 
-        let sample = scratch_space[MIN] + random(scratch_space[MAX] - scratch_space[MIN] - 1) + 1
-
-        if output < sample {
-            scratch_space[MIN]  = output + 1
-            scratch_space[OVER] = 1
-        } else {
-            scratch_space[MAX]  = output - 1
-            scratch_space[OVER] = 0
-        }
+        scratch_space[MIN]  = output + 1
+        scratch_space[OVER] = 0
 
     }
+
+    return pass
 
 }

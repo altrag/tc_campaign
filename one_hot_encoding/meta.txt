@@ -4,10 +4,12 @@ size = [-55, -55, 55, 55]
 input_labels = [["Select output"]]
 output_labels = ["Output 0", "Output 1", "Output 2", "Output 3", "Output 4", "Output 5", "Output 6", "Output 7", "Output 8", "Output 9", "Output 10", "Output 11", "Output 12", "Output 13", "Output 14", "Output 15"]
 remove_components = [com_decoder_1, com_decoder_2, com_decoder_3]
-unlocks_components = [com_splitter_word_2, com_splitter_word_4, com_splitter_word_8, com_maker_word_2, com_maker_word_4, com_maker_word_8, com_static_indexer, com_static_indexer_config, com_concatenator_2, com_concatenator_4, com_concatenator_8]
+unlocks_components = [com_splitter_word_2, com_splitter_word_4, com_splitter_word_8, com_maker_word_2, com_maker_word_4, com_maker_word_8, com_concatenator_2, com_concatenator_4, com_concatenator_8]
 background = 4
 dialogue = [
   (info, `The input decides which output should be turned [ON]. So if the input is 7, send [ON] to the 7th output and [OFF] to all the others.
 
-Also, you may not use any of the decoders you built before.`),
+Also, you may not use any of the decoders you built before.
+
+Use this [color=#e63e5b][url=one_hot]hint[/url][/color] if you get stuck.`),
 ]

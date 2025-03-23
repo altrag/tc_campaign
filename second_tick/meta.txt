@@ -3,8 +3,6 @@ title = "Second Tick"
 size = [-30, -30, 30, 30]
 tick_past_fail = 4
 output_history_pins = 1
-unlocks_info = " [color=#b72d41][b]TIP:[/b][/color] 
-You can select a component with its pins by double clicking it"
 dialogue = [
   (alien_centered, "As you know these tests culminate in building a functioning computer."),
   (alien_centered, "Species that are capable of finishing are considered sentient by law."),

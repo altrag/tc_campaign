@@ -1,12 +1,12 @@
 kind = sequential
-title = "Superscalar register"
-size = [-48, -48, 49, 33]
+title = "Superscalar register file"
+size = [-80, -80, 81, 81]
 background = 6
-save_solution_as_custom = "Symphony/Allegro/super_reg"
-copy_solution_to_level = ["symphony_register_4"]
-input_labels = [["Load A 0"], ["Load A 1"], ["Store A"], ["Store A value"], ["Load B 0"], ["Load B 1"], ["Store B"], ["Store B value"]]
-output_labels = ["Load A 0", "Load A 1", "Load B 0", "Load B 1"]
-add_components = [com_probe_memory_word: -1]
+save_solution_as_custom = "Symphony/Allegro/superscalar/reg_file"
+input_labels = [["Load 0A"], ["Load 0B"], ["Store 0"], ["Store 0 value"], ["Load 1A"], ["Load 1B"], ["Store 1"], ["Store 1 value"]]
+output_labels = ["Load 0A", "Load 0B", "Load 1A", "Load 1B"]
 dialogue = [
-    (alien_center, `Build a register with 4 loads and 2 stores. When both stores are enabled, the second value overwrites the first one.`),
+    (alien_center, `The register file in our superscalar architectures has to be able to load 4 values and store 2 at the same time.
+
+You can use the "inner_reg" component that was built to make the register file simpler. Don't forget to set the index on each "inner_reg" by clicking on the bit size icon.`),
 ]

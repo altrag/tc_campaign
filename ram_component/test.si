@@ -60,23 +60,6 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
 
-    let output_enabled = <Int> (<U64> (outputs[1] > 0))
-
-    if inputs[0] != output_enabled {
-
-        if inputs[0] == 0 {
-
-            set_error("Output should not be enabled.")
-
-        } else {
-
-            set_error("Output should be enabled.")
-
-        }
-
-        return fail
-    }
-    
     if inputs[0] == 1 {
 
         var address = inputs[2] * 2 + inputs[3]

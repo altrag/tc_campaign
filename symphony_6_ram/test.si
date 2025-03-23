@@ -1,6 +1,7 @@
 const REGS = 0
-const COUNTER = 8
-const RAM = 9
+const COUNTER = 16
+const RAM = 17
+const SSD = 0x10000 + RAM
 
 const OP_IO  = 0
 const OP_ALU = 1
@@ -11,16 +12,16 @@ def instruction_to_str(instruction: Int) String {
 
     let mode            = (instruction >> 30)
     let opcode          = (instruction >> 24) & 0b1111
-    let dest            = (instruction >> 20) & 0b111
-    let a               = (instruction >> 16) & 0b111
-    let b               = (instruction >> 8) & 0b111
+    let dest            = (instruction >> 20) & 0b1111
+    let a               = (instruction >> 16) & 0b1111
+    let b               = (instruction >> 8) & 0b1111
     let immediate       = (instruction >> 28) & 1 != 0
     let immediate_value =  instruction & 0xffff
 
     var dest_str = ""
 
     switch dest
-        0 { dest_str = "rz" }
+        0 { dest_str = "zr" }
         14 { dest_str = "sp" }
         15 { dest_str = "flags" }
         default { dest_str = "r" + str(dest) }
@@ -29,7 +30,7 @@ def instruction_to_str(instruction: Int) String {
     var a_str = ""
 
     switch a
-        0 { a_str = "rz" }
+        0 { a_str = "zr" }
         14 { a_str = "sp" }
         15 { a_str = "flags" }
         default { a_str = "r" + str(a) }
@@ -43,7 +44,7 @@ def instruction_to_str(instruction: Int) String {
     } else {
 
         switch b
-            0 { b_str = "rz" }
+            0 { b_str = "zr" }
             14 { b_str = "sp" }
             15 { b_str = "flags" }
             default { b_str = "r" + str(b) }
@@ -120,23 +121,29 @@ def instruction_to_str(instruction: Int) String {
 
         OP_RAM {
 
-            const LOAD  = 0
-            const STORE = 1
+            const LOAD   = 0
+            const STORE  = 1
+            const PLOAD  = 2
+            const PSTORE = 3
 
             switch opcode
-                LOAD  { return `load {dest_str}, [{b_str}]` }
-                STORE { return `store [{b_str}], {a_str}` }
+                LOAD   { return `load {dest_str}, [{b_str}]` }
+                STORE  { return `store [{b_str}], {a_str}` }
+                PLOAD  { return `pload {dest_str}, [{b_str}]` }
+                PSTORE { return `pstore [{b_str}], {a_str}` }
 
         }
 
+
 }
+
 def retire_instruction(instruction: Int, $scratch_space: [Int], input: Int) Int {
     
     let mode            = (instruction >> 30)
     let opcode          = (instruction >> 24) & 0b1111
-    let dest            = (instruction >> 20) & 0b111
-    let a               = (instruction >> 16) & 0b111
-    let b               = (instruction >> 8) & 0b111
+    let dest            = (instruction >> 20) & 0b1111
+    let a               = (instruction >> 16) & 0b1111
+    let b               = (instruction >> 8) & 0b1111
     let immediate       = (instruction >> 28) & 1 != 0
     let immediate_value =  instruction & 0xffff
 
@@ -199,11 +206,7 @@ def retire_instruction(instruction: Int, $scratch_space: [Int], input: Int) Int 
                 8 { result = a_value >> b_value }
                 9 { result = flag_result(a_value, b_value) }
 
-            if dest < 8 {
-            
-                scratch_space[REGS + dest] = result & 0xffff
-            
-            }
+            scratch_space[REGS + dest] = result & 0xffff
 
         }
 
@@ -257,6 +260,27 @@ def retire_instruction(instruction: Int, $scratch_space: [Int], input: Int) Int 
 }
 
 
+def on_reset($scratch_space: [Int], test: Int) {
+
+    var addr = 0
+    while addr < 0xfffe {
+
+        scratch_space[RAM + addr] = get_ram_value(addr)
+        scratch_space[SSD + addr] = get_ssd_value(addr)
+        addr += 1
+
+    }
+
+}
+
+def val_str(input: Int) String {
+    
+    if input == Z_STATE { return "Z" }
+
+    return str(input)
+
+}
+
 def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
     let result = random(0xff)
@@ -266,35 +290,56 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
 
-    
-
     if get_assembler_register_count() == 0 {
 
         set_error(`Connect your registers to the assembler`)
         return fail
 
-    } elif get_assembler_register_count() < 6 {
+    } elif get_assembler_register_count() < 15 {
     
-        set_error(`Connect {7 - get_assembler_register_count()} more registers to the assembler`)
+        set_error(`Connect {15 - get_assembler_register_count()} more registers to the assembler`)
         return fail
     
     }
 
-    if !has_ram() {
+    if get_ram_count() > 1 {
 
-        set_error(`No RAM component found`)
+        set_error(`Use only one RAM component.`)
         return fail
 
     }
+
+    if get_ram_size() != 65536 {
+
+        set_error(`Set RAM size to 65536.`)
+        return fail
+
+    }
+
+    if get_ram_width() != 16 {
+
+        set_error(`Set the primary RAM width to 16.`)
+        return fail
+
+    }
+
+    if get_ram_width_2() != 32 {
+
+        set_error(`Set the secondary RAM width to 32.`)
+        return fail
+
+    }
+
 
     if get_program_address() != scratch_space[COUNTER] {
 
-        set_error(`You should read address {scratch_space[COUNTER]} from the assembler, not {get_program_address()}`)
+        set_error(`You should read address {scratch_space[COUNTER]} from the assembler, not {val_str(get_program_address())}`)
         return fail
 
     }
 
     let instruction = get_program_output()
+
     ui_set_text("description", instruction_to_str(instruction))
     let output = retire_instruction(instruction, $scratch_space, inputs[0])
 
@@ -318,7 +363,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
                 15 { register = "'flags'" }
                 default { register = `r{reg}`}
 
-            set_error(`{register} should have value {scratch_space[REGS + reg]}, not {value}`)
+            set_error(`{register} should have value {scratch_space[REGS + reg]}, not {val_str(value)}`)
             return fail
 
         }
@@ -327,30 +372,27 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
     }
 
-    if get_ram_size() != 65536 {
+    {
 
-        set_error(`Set RAM size to 65536.`)
-        return fail
+        var addr = 0
+        while addr < 0xfffe {
 
-    }
+            let value = get_ram_value(addr)
 
-    var addr = 0
-    while addr < 0xfffe {
+            if value != scratch_space[RAM + addr] {
 
-        let value = get_ram_value(addr)
+                set_error(`RAM should contain value {scratch_space[RAM + addr]}, at address {addr}, not {val_str(value)}.`)
+                return fail
 
-        if value != scratch_space[RAM + addr] {
+            }
 
-            set_error(`RAM should contain value {scratch_space[RAM + addr]}, at address {addr}, not {value}.`)
-            return fail
+            addr += 1
 
         }
-
-        addr += 1
-
     }
 
-    if tick == 1000 {
+    
+    if tick == 2000 {
         return win
     }
 

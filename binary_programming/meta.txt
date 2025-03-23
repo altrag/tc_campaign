@@ -1,7 +1,7 @@
 kind = sequential
 title = "Add 5"
 tests = 32
-size = [-75, -50, 43, 45]
+size = [-80, -50, 43, 45]
 copy_solution_to_level = ["assembly_programming"]
 unlocks_pages = ["Assembler"]
 dialogue = [

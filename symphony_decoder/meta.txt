@@ -3,9 +3,10 @@ title = "Instruction decoder"
 size = [-48, -48, 49, 49]
 save_solution_as_custom = "Symphony/DEC"
 input_labels = [["Instruction"]]
-output_labels = ["Mode", "Opcode", "Destination", "Arg 1", "Arg 2", "Is immediate", "Immediate value"]
+output_labels = ["Mode", "Opcode", "Destination", "Arg A", "Arg B", "Is immediate", "Immediate value"]
 background = 6
 components_available = [com_static_indexer: 7]
+unlocks_components = [com_static_indexer, com_static_indexer_config]
 dialogue = [
   (info, `
 Build a circuit that splits Symphony instructions into their different parts. This will be very helpful later.
