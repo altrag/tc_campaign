@@ -1,1 +1,0 @@
-[text id="my_text" text="Update the register to immedaitely output the saved value" size=24 y=90]

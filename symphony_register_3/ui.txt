@@ -1,1 +1,0 @@
-[text id="my_text" text="Build a 16 bit register with 4 load and 2 store pins" size=24 y=90]
